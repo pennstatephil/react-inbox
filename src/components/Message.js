@@ -1,14 +1,14 @@
 import React from 'react'
 
-const Message = ({id, subject, isRead, isStarred, labels, isSelected, selectToggle, starToggle}) => (
-  <div class={`row message ${isRead ? 'read' : 'unread'} ${isSelected ? 'selected' : ''}`}>
+const Message = ({id, subject, read, starred, labels, selected, selectToggle, starToggle}) => (
+  <div class={`row message ${read ? 'read' : 'unread'} ${selected ? 'selected' : ''}`}>
   <div class="col-xs-1">
     <div class="row">
       <div class="col-xs-2">
-        <input type="checkbox" checked = {isSelected} onClick = {() => selectToggle(id)}/>
+        <input type="checkbox" checked = {selected} onClick = {() => selectToggle(id)}/>
       </div>
       <div class="col-xs-2" onClick = {() => starToggle(id)}>
-        <i class={`star fa fa-star${!isStarred ? '-o' : ''}`}></i>
+        <i class={`star fa fa-star${!starred ? '-o' : ''}`}></i>
       </div>
     </div>
   </div>

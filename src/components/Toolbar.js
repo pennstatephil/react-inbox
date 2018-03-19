@@ -1,12 +1,16 @@
 import React from 'react'
 
-const Toolbar = ({unreadCount, labelValues, anySelected, allSelected, toggleSelectAllMessages, toggleMarkSelectedMessagesRead, deleteSelectedMessages, labelSelectedMessages, unLabelSelectedMessages}) => (
+const Toolbar = ({unreadCount, labelValues, anySelected, allSelected, toggleSelectAllMessages, toggleMarkSelectedMessagesRead, deleteSelectedMessages, labelSelectedMessages, unLabelSelectedMessages, showHideComposeForm}) => (
 <div class="row toolbar">
   <div class="col-md-12">
     <p class="pull-right">
       <span class="badge badge">{unreadCount}</span>
       {`unread message${unreadCount !== 1 ? "s" : ""}`}
     </p>
+
+    <a class="btn btn-danger" onClick = {() => showHideComposeForm()}>
+      <i class="fa fa-plus"></i>
+    </a>
 
     <button class="btn btn-default" onClick = {() => toggleSelectAllMessages(allSelected ? false : true)}>
       <i class={`fa ${allSelected ? "fa-check-square-o" : anySelected ? "fa-minus-square-o" : "fa-square-o"}`}></i>
