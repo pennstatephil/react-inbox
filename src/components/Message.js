@@ -1,4 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { toggleSelected, toggleStarred } from '../actions'
 
 const Message = ({id, subject, read, starred, labels, selected, selectToggle, starToggle}) => (
   <div class={`row message ${read ? 'read' : 'unread'} ${selected ? 'selected' : ''}`}>
@@ -21,4 +24,12 @@ const Message = ({id, subject, read, starred, labels, selected, selectToggle, st
 </div>
 )
 
-export default Message
+const mapDispatchToProps = dispatch => bindActionCreators({
+  selectToggle: toggleSelected,
+  starToggle: toggleStarred
+}, dispatch)
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Message)

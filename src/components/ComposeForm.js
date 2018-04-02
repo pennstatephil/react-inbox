@@ -1,9 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import {onSend} from '../actions'
 
-class ComposeForm extends React.Component {
-  render() {
-    return (
-      <form class="form-horizontal well" onSubmit = {this.submit}>
+const ComposeForm = ({}) => (
+      <form class="form-horizontal well" onSubmit = {submit}>
       <div class="form-group">
         <div class="col-sm-8 col-sm-offset-2">
           <h4>Compose Message</h4>
@@ -27,16 +27,15 @@ class ComposeForm extends React.Component {
         </div>
       </div>
     </form>
-  )}
+  )
 
-  submit = (e) => {
-    e.preventDefault()
-    this.props.onSend( {
-        subject: e.target.subject.value,
-        body: e.target.body.value
-      }
-    )
-  }
+let submit = (e) => {
+  e.preventDefault()
+  onSend( {
+      subject: e.target.subject.value,
+      body: e.target.body.value
+    }
+  )
 }
 
-export default ComposeForm
+export default connect(null, null)(ComposeForm)

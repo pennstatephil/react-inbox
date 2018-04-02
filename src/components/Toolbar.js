@@ -1,44 +1,76 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { toggleCompose, toggleSelectAllMessages, toggleMarkSelectedMessagesRead,
+  deleteSelectedMessages, labelSelectedMessages, unLabelSelectedMessages } from '../actions'
 
-const Toolbar = ({unreadCount, labelValues, anySelected, allSelected, toggleSelectAllMessages, toggleMarkSelectedMessagesRead, deleteSelectedMessages, labelSelectedMessages, unLabelSelectedMessages, showHideComposeForm}) => (
+const Toolbar = ({messages, labelValues, toggleSelectAllMessages, toggleMarkSelectedMessagesRead, deleteSelectedMessages, labelSelectedMessages, unLabelSelectedMessages, toggleCompose}) => (
 <div class="row toolbar">
   <div class="col-md-12">
     <p class="pull-right">
-      <span class="badge badge">{unreadCount}</span>
-      {`unread message${unreadCount !== 1 ? "s" : ""}`}
+      <span class="badge badge">{calculateUnreadCount(messages)}</span>
+      {`unread message${calculateUnreadCount(messages) !== 1 ? "s" : ""}`}
     </p>
 
-    <a class="btn btn-danger" onClick = {() => showHideComposeForm()}>
+    <a class="btn btn-danger" onClick = {() => toggleCompose()}>
       <i class="fa fa-plus"></i>
     </a>
 
-    <button class="btn btn-default" onClick = {() => toggleSelectAllMessages(allSelected ? false : true)}>
-      <i class={`fa ${allSelected ? "fa-check-square-o" : anySelected ? "fa-minus-square-o" : "fa-square-o"}`}></i>
+    <button class="btn btn-default" onClick = {() => toggleSelectAllMessages(getAllSelected(messages) ? false : true)}>
+      <i class={`fa ${getAllSelected(messages) ? "fa-check-square-o" : getAnySelected(messages) ? "fa-minus-square-o" : "fa-square-o"}`}></i>
     </button>
 
-    <button class="btn btn-default" disabled = {!anySelected} onClick = {() => toggleMarkSelectedMessagesRead(true)}>
+    <button class="btn btn-default" disabled = {!getAnySelected(messages)} onClick = {() => toggleMarkSelectedMessagesRead(true)}>
       Mark As Read
     </button>
 
-    <button class="btn btn-default" disabled = {!anySelected} onClick = {() => toggleMarkSelectedMessagesRead(false)}>
+    <button class="btn btn-default" disabled = {!getAnySelected(messages)} onClick = {() => toggleMarkSelectedMessagesRead(false)}>
       Mark As Unread
     </button>
 
-    <select class="form-control label-select" disabled = {!anySelected} onChange = {(e) => labelSelectedMessages(e.target.value)}>
+    <select class="form-control label-select" disabled = {!getAnySelected(messages)} onChange = {(e) => labelSelectedMessages(e.target.value)}>
       <option value = ''>Apply label</option>
       {labelValues.map(it => <option value={`${it}`}>{it}</option>)}
       </select>
 
-    <select class="form-control label-select" disabled = {!anySelected}  onChange = {(e) => unLabelSelectedMessages(e.target.value)}>
+    <select class="form-control label-select" disabled = {!getAnySelected(messages)}  onChange = {(e) => unLabelSelectedMessages(e.target.value)}>
       <option value = ''>Remove label</option>
       {labelValues.map(it => <option value={`${it}`}>{it}</option>)}
     </select>
 
-    <button class="btn btn-default" disabled = {!anySelected} onClick = {() => deleteSelectedMessages()}>
+    <button class="btn btn-default" disabled = {!getAnySelected(messages)} onClick = {() => deleteSelectedMessages()}>
       <i class="fa fa-trash-o"></i>
     </button>
   </div>
 </div>
 )
 
-export default Toolbar
+const mapDispatchToProps = dispatch => bindActionCreators({
+  toggleCompose,
+  toggleSelectAllMessages,
+  toggleMarkSelectedMessagesRead,
+  deleteSelectedMessages,
+  labelSelectedMessages,
+  unLabelSelectedMessages
+}, dispatch)
+
+function calculateUnreadCount(messages) {
+  var count = 0;
+  for(let i=0; i<messages.length; i++)
+    if (!messages[i].read)
+      count++;
+  return count;
+}
+
+function getAnySelected(messages) {
+  return messages.filter(msg => msg.selected).length > 0
+}
+
+function getAllSelected(messages) {
+  return messages.filter(msg => !msg.selected).length === 0
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Toolbar);
