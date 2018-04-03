@@ -12,7 +12,7 @@ export function fetchMessages() {
 
 export const ON_SEND = 'ON_SEND'
 export function onSend(message) {
-  return async (dispatch, message) => {
+  return async (dispatch) => {
     const response = await fetch(`http://localhost:8082/api/messages`, {
       method: 'POST',
       body: JSON.stringify(message),

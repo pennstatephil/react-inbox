@@ -1,8 +1,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import {onSend} from '../actions'
 
-const ComposeForm = ({}) => (
+const ComposeForm = ({onSend}) => {
+  const submit = (e) => {
+    e.preventDefault()
+    onSend( {
+        subject: e.target.subject.value,
+        body: e.target.body.value
+      }
+    )
+  }
+
+  return(
       <form class="form-horizontal well" onSubmit = {submit}>
       <div class="form-group">
         <div class="col-sm-8 col-sm-offset-2">
@@ -28,14 +39,10 @@ const ComposeForm = ({}) => (
       </div>
     </form>
   )
-
-let submit = (e) => {
-  e.preventDefault()
-  onSend( {
-      subject: e.target.subject.value,
-      body: e.target.body.value
-    }
-  )
 }
 
-export default connect(null, null)(ComposeForm)
+const mapDispatchToProps = dispatch => bindActionCreators({
+    onSend,
+  }, dispatch)
+
+export default connect(null, mapDispatchToProps)(ComposeForm)
