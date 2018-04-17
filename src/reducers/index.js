@@ -32,8 +32,6 @@ function messages(state = [], action) {
           ...state[index],
           starred: !state[index].starred
       }
-      
-      updateMessages([updated.id], "star", updated.starred)
 
       return [...state.slice(0, index),
           updated,
@@ -47,10 +45,8 @@ function messages(state = [], action) {
           }})
 
     case TOGGLE_MARK_SELECTED_MESSAGES_READ: {
-      let messageIds = []
       let updated = state.map(item => { if(item.selected) {
             if(item.read !== action.read) {
-              messageIds.push(item.id)
               return {
                 ...item,
                 read: action.read
@@ -59,26 +55,17 @@ function messages(state = [], action) {
           } else { return item }
       })
 
-      if(messageIds.length > 0)
-        updateMessages(messageIds, "read", action.read)
-
       return updated
     }
 
     case DELETE_SELECTED_MESSAGES: {
-      let messageIds = state.filter(item => item.selected).map(item => item.id)
-      if(messageIds.length > 0)
-        updateMessages(messageIds, "delete")
-
       return state.filter(item => !item.selected)
     }
 
     case LABEL_SELECTED_MESSAGES: {
-      let messageIds = []
       let updatedMessages = state.map(item => { 
         if(item.selected) {
           if(!item.labels.includes(action.label)) {
-            messageIds.push(item.id)
             return {
               ...item,
               labels: [...item.labels,
@@ -89,18 +76,13 @@ function messages(state = [], action) {
         } else { return item }
       })
 
-      if(messageIds.length > 0)
-        updateMessages(messageIds, "addLabel", action.label)
-
       return updatedMessages
     }
 
     case UNLABEL_SELECTED_MESSAGES: {
-      let messageIds = []
       let updatedMessages = state.map(item => { 
         if(item.selected) {
           if(item.labels.includes(action.label)) {
-            messageIds.push(item.id)
             return {
               ...item,
               labels: item.labels.filter(l => l !== action.label)
@@ -108,9 +90,6 @@ function messages(state = [], action) {
           } else { return item }
         } else { return item }
       })
-
-      if(messageIds.length > 0)
-        updateMessages(messageIds, "removeLabel", action.label)
 
       return updatedMessages
     }
@@ -123,38 +102,6 @@ function messages(state = [], action) {
 let findMessageIndexById = (messages, id) =>
       messages.indexOf(messages.find(message => message.id === id))
 
-let updateMessages = async(messageIds, command, value) => {
-      let reqBody = { 
-        messageIds: messageIds, 
-        command: command
-      }
-
-      if(command === 'star') {
-        reqBody = {
-          ...reqBody,
-          star: value
-        }
-      } else if (command === 'read') {
-        reqBody = {
-          ...reqBody,
-          read: value
-        }
-      } else if (command.includes('Label')) {
-        reqBody = {
-          ...reqBody,
-          label: value
-        }
-      }
-
-      const response = await fetch(`/api/messages/`, {
-        method: 'PATCH',
-        body: JSON.stringify(reqBody),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        }
-      })
-  }
 
 function appState(state = {composing: false}, action) {
     switch(action.type) {
