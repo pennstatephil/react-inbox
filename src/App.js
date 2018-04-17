@@ -10,11 +10,10 @@ const labelValues = ["dev", "personal", "gSchool"]
 
 const App = ({ messages, composing }) => (
       <div className="App">
-        <Toolbar messages = {messages}
-        labelValues = {labelValues} 
+        <Toolbar labelValues = {labelValues} 
         />
         {composing ? <ComposeForm /> : ""}
-        <MessageList messages = {messages} />
+        <MessageList />
       </div>
   )
 

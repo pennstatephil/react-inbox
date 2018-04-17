@@ -45,6 +45,10 @@ const Toolbar = ({messages, labelValues, toggleSelectAllMessages, toggleMarkSele
 </div>
 )
 
+const mapStateToProps = state => ({
+  messages: state.messages
+})
+
 const mapDispatchToProps = dispatch => bindActionCreators({
   toggleCompose,
   toggleSelectAllMessages,
@@ -71,6 +75,6 @@ function getAllSelected(messages) {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Toolbar);
